@@ -1,9 +1,14 @@
 <template>
+        <div class="modal" :class="{ 'is-active': isModalActive }">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+            <p class="modal-card-title">New Customer</p>
+                <button class="delete" aria-label="close" @click="isModalActive = false"></button>
+            </header>
+            <section class="modal-card-body">
 
-<div class="container">
-     <div class="container">
-         <div class="column is-4 is-offset-4">
-             <div class="field">
+                <div class="field">
                 <label class="label">First Name</label>
                 <div class="control">
                     <input class="input" type="text" placeholder="First" autofocus="" v-model="first_name">
@@ -60,53 +65,64 @@
                 <div class="control">
                     <input class="input" type="tel" placeholder="Your Email" autofocus="" v-model="citizenship">
                 </div>
-            </div>                              
-            <div class="field is-grouped">
-                <div class="control">
-                    <button class="button is-link" v-on:click="register">Submit</button>
-                </div>
-            </div>
+            </div>             
+
+            </section>
+            <footer class="modal-card-foot">
+            <button class="button is-success" v-on:click="register">Save changes</button>
+            <button class="button" @click="cancel">Cancel</button>
+            </footer>
         </div>
-     </div>
-</div>
-    
+        </div>
+
 </template>
 
 <script>
-
 /* eslint-disable */
-
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
+export default {
+  name: 'ModalBox',
+  props: {
+    isActive: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data () {
+    return {
 
-export default {  
-    data(){
-        return{
-            first_name: "",
-            last_name: "",
-            middle_name: "",
-            name_extension: "",
-            date_of_birth: "",
-            citizenship: "",
-            civil_status:[
-                    {status: "single"},
-                    {status: "married"},
-                ],
-            gender:[
-                    {gender: "Male"},
-                    {gender: "Female"},
-                ],
+        first_name: "",
+        last_name: "",
+        middle_name: "",
+        name_extension: "",
+        date_of_birth: "",
+        citizenship: "",
+        civil_status:[
+                {status: "single"},
+                {status: "married"},
+            ],
+        gender:[
+                {gender: "Male"},
+                {gender: "Female"},
+            ],
 
-            selected_civil_status: "",
-            selected_gender: ""
+        selected_civil_status: "",
+        selected_gender: "",
 
-
-        }
-    },
+        isModalActive: false
+    }
+  },
     methods: {
-
+        cancel () {
+        this.$emit('cancel')
+        },
+        confirm () {
+        this.$emit('confirm')
+        },
         register(){
+
             const url = "";
 
             let data = new FormData();
@@ -143,15 +159,17 @@ export default {
             }
 
             console.log(this.selected_gender);
-
-          
-
-        }
+        },
+  },
+  watch: {
+    isActive (newValue) {
+      this.isModalActive = newValue
+    },
+    isModalActive (newValue) {
+      if (!newValue) {
+        this.cancel()
+      }
     }
+  }
 }
 </script>
-
-
-<style scoped>
-
-</style>
